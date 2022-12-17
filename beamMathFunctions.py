@@ -419,7 +419,6 @@ def calSv(x,span):
 
     if Tv_tmp > Tc_max_dict[span[fck]]:
         raise ValueError("Error: Tv > Tc_max!")
-    
     if Tv_tmp<Tc_tmp:
         tmp = 0.87 * 415 * span[Asv] / (0.4 * span[b_mm]) # possible issue: span[Asv]
     else:

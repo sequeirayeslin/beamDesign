@@ -388,7 +388,11 @@ y-axis: 1 unit = {} kNm'''.format(xscl,yscl),(-300,300),'blue')
 
 #tables
 
-output_accum = ''
+output_accum = '''
+Left Moment: {}
+Right Moment: {}
+
+'''.format(lMom, rMom)
 
 for i,span in enumerate(spans):
 
@@ -410,6 +414,7 @@ for i,span in enumerate(spans):
     Stirrup Diameter (mm): {}
     Steel Grade (N/mm2): {}
     Concrete Grade: M{}
+    
 
     Point Loads:
 
@@ -419,11 +424,20 @@ for i,span in enumerate(spans):
 
     {}
 
+    Output:
+
     {}
     
     '''.replace('\n    ','\n').format(i+1,span[b_mm], span[D_mm], span[stirDia], span[fy], span[fck], pl_table, udl_table, table)
 
+output_accum += '''
+---------------------------------------------------------------------------------------
+-> Moment sign convention: clockwise +ve, anticlockwise -ve
+-> All forces in kN, all moments in kNm, all lengths in m (except stirrup diameter)
+-> Stirrups are assumed to be 2 legged'''
+
 print(output_accum)
+
 
 
 
@@ -440,7 +454,7 @@ if resp=="y":
     fName=vFName("\nEnter file name: ")
     
     with open('Results/'+fName+'.txt', 'w') as f:
-        print('PROJECT: ' + proj_name + '\n\n' + output_accum, file = f)
+        print('PROJECT: ' + proj_name + '\nFILENAME: '+ fName+'.txt' +'\n\n' + output_accum, file = f)
 
     resp=qryCmmdVald('''
     Do you want to save the graphs too?
