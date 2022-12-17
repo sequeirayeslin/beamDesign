@@ -396,12 +396,32 @@ for i,span in enumerate(spans):
     
     table = tabulate(tab_lst, headers=['Sr', 'Distance Ratio', 'Moment (kNm)', 'Shear Force (kN)', 'Ast(mm2)', 'Asc (mm2)', 'Sv (mm)'], tablefmt='orgtbl')
     
+    pl_tab_lst = [ [j+1, pointL[mag], pointL[pos]] for j,pointL in enumerate(span[pLs])]
+    pl_table = tabulate(tab_lst, headers=['Sr', 'Magnitude', 'Position'], tablefmt='orgtbl')
+
+    udl_tab_lst = [ [j+1, udl[mag], udl[strPos], udl[endPos]] for j,udl in enumerate(span[udls])]
+                    
+    udl_table = tabulate(tab_lst, headers=['Sr', 'Magnitude', 'Start Position', 'End Position'], tablefmt='orgtbl')
+
     output_accum+='''
     SPAN #{}:
-    
+    b (mm): {}
+    D (mm): {}
+    Stirrup Diameter (mm): {}
+    Steel Grade (N/mm2): {}
+    Concrete Grade: M{}
+
+    Point Loads:
+
+    {}
+
+    UDLs:
+
+    {}
+
     {}
     
-    '''.replace('\n    ','\n').format(i+1,table)
+    '''.replace('\n    ','\n').format(i+1,span[b_mm], span[D_mm], span[stirDia], span[fy], span[fck], pl_table, udl_table, table)
 
 print(output_accum)
 

@@ -4,6 +4,7 @@ from copy import deepcopy
 from beamDictKeys import *
 from math import sqrt
 
+#below dicts built from tables in IS456 Code
 
 Asc_fact_dict={
 
@@ -86,6 +87,12 @@ Tc_dict = {
     }
 }
 
+Tc_max_dict = {
+    15: 2.5,
+    20: 2.8,
+    25: 3.1,
+    30: 3.5
+}
 
 def calFemLeft(span):
     ''' Finds FEM at left side of span '''
@@ -395,7 +402,7 @@ def calTv(x,span):
 def calTc(x,span):
     ''' Calculates design shear strength of concrete in N/mm2 '''
     st_per = 100 * calAst(x,span) / (span[b_mm] * span[d_mm])
-    if st_per <=0.18:
+    if st_per <= 0.15:
         st_per = 0.15
     else:
         st_per = round(st_per/25,2)*25
@@ -407,26 +414,19 @@ def calTc(x,span):
 
 def calSv(x,span):
     ''' Calculates stirrup spacing in mm '''
-    Tv_tmp = calTv(x,span)
-    Tc_tmp = calTc(x,span)
+    Tv_tmp = calTv(x,span) # possible issue
+    Tc_tmp = calTc(x,span) # possible issue
+
+    if Tv_tmp > Tc_max_dict[span[fck]]:
+        raise ValueError("Error: Tv > Tc_max!")
     
     if Tv_tmp<Tc_tmp:
-        tmp = 0.87 * 415 * span[Asv] / (0.4 * span[b_mm])
-        if tmp>300.0:
-            tmp = 300.0
-        if tmp>0.75*span[d_mm]:
-            tmp = 0.75*span[d_mm]
-        return tmp
-    
-    Vu = 1.5 * calSf(x,span) * 1000
-    Vus = Vu - Tc_tmp * span[b_mm] * span[d_mm]
-    
-    tmp = 0.87 * 415 * span[Asv] * span[d_mm] / Vus
+        tmp = 0.87 * 415 * span[Asv] / (0.4 * span[b_mm]) # possible issue: span[Asv]
+    else:
+        Vu = 1.5 * calSf(x,span) * 1000 # possible issue: calSf(x,span)
+        Vus = Vu - Tc_tmp * span[b_mm] * span[d_mm]
+        tmp = 0.87 * 415 * span[Asv] * span[d_mm] / Vus
     
     # adjusting Sv according to indian standards (as per IS 456 2000)
-    if tmp>300.0:
-        tmp = 300.0
-    if tmp>0.75*span[d_mm]:
-        tmp = 0.75*span[d_mm]
     
-    return tmp
+    return min(tmp, 300, 0.75*span[d_mm])
