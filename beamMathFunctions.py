@@ -98,8 +98,6 @@ def calFemLeft(span):
     ''' Finds FEM at left side of span '''
     femL = 0
     
-    
-    
     for udl in span[udls]:
     
         integr = lambda x: -udl[mag] / span[L]**2 * ((span[L]**2 * x**2 / 2) - (2 * span[L] * x**3 / 3) + (x**4 / 4))

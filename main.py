@@ -18,6 +18,7 @@ from beamDictKeys import *
 from math import pi
 from os.path import exists
 
+DEBUG=True
 
 print('''
 BEAM DESIGN PROGRAM
@@ -300,18 +301,27 @@ if queriesReq:
 
 ### Calculations +-/x ###
 
+if DEBUG: print("\n\n------------------------------------DEBUG-INFO------------------------------------\n\n")
+
 #calculates moment of inetia for all spans
-for span in spans:
+for i, span in enumerate(spans):
     span[I]=calI(span)
+    if DEBUG: print("moment of inertia (span#{}) = {} Kg m2".format(i+1, span[I]))
+
 
 #these values are required only if there are more than one spans (for moment distribution method)
 if len(spans) > 1:
 
+    if DEBUG: print("\n----Handling CASE: spans more than 1, performing additional calcuations----\n")
+
     #calculates FEMs
-    for span in spans:
+    for i, span in enumerate(spans):
         span[fems][l] = calFemLeft(span)
         span[fems][r] = calFemRight(span)
-        span[I]=calI(span)
+        if DEBUG: print("Span #{}, FEM, Left = {}".format(i+1, span[fems][l]))
+        if DEBUG: print("Span #{}, FEM, Right = {}".format(i+1, span[fems][r]))
+        #span[I]=calI(span)
+    if DEBUG: print()
 
     #calculates distribution factors for each span
     spansCopy = deepcopy(spans)
@@ -320,40 +330,62 @@ if len(spans) > 1:
 
     for i, span, prevSpan in zip(range(len(spans)), spans, prevSpans):
         span[df][l] = calDFLeft(span, prevSpan, i, len(spans))
+        if DEBUG: print("Span #{}, Distribution factor, Left = {}".format(i+1, span[df][l]))
 
     for i, span, nxtSpan in zip(range(len(spans)), spans, nxtSpans):
         span[df][r] = calDFRight(span, nxtSpan, i, len(spans))
+        if DEBUG: print("Span #{}, Distribution factor, Right = {}".format(i+1, span[df][r]))
 
+    if DEBUG: print("\n----------------------------Handling CASE: END----------------------------\n")
+
+if DEBUG: print("\n**Performing moment disribution method on beam**\n")
 #performs moment disribution method on beam
 reacMomLst = perfMomDist(spans, lMom, rMom)
 
 #stores moment at ends of span considering it in FBD form
-for span, (leftEndMom, rightEndMom) in zip(spans,reacMomLst):
+for i, span, (leftEndMom, rightEndMom) in zip(range(len(spans)), spans, reacMomLst):
     span[fbd][endMoms][l] = leftEndMom
     span[fbd][endMoms][r] = rightEndMom
+    if DEBUG: print("Span #{}, FBD, end moment, Left = {}".format(i+1, span[fbd][endMoms][l]))
+    if DEBUG: print("Span #{}, FBD, end moment, Right = {}".format(i+1, span[fbd][endMoms][r]))
+
+if DEBUG: print()
 
 #stores reactions at ends of span considering it in FBD form, required for moment and shear force calculation
-for span in spans:
+for i, span in enumerate(spans):
     span[fbd][reacs][l] = calLeftReac(span)
     span[fbd][reacs][r] = calRightReac(span)
+    if DEBUG: print("Span #{}, Support Reaction, Left = {}".format(i+1, span[fbd][reacs][l]))
+    if DEBUG: print("Span #{}, Support Reaction, Right = {}".format(i+1, span[fbd][reacs][r]))
 
 #finds beam length, will be used in graph ploting
 beamLen = calBeamLen(spans)
 
+if DEBUG: print()
+
 #finds Xumax, Ru and Mulim, required for Ast, Asc calculations
-for span in spans:
+for i,span in enumerate(spans):
     span[Xumax]=calXumax(span)
     span[Ru]=calRu(span)
     span[Mulim]=calMulim(span)
+    if DEBUG: print("Span #{}, Xumax = {}".format(i+1, span[Xumax]))
+    if DEBUG: print("Span #{}, Ru = {}".format(i+1, span[Ru]))
+    if DEBUG: print("Span #{}, Mulim = {}".format(i+1, span[Mulim]))
+
+if DEBUG: print("\n(info) Not printing final values, please refer to output\n")
 
 #calculates moments, shear forces, area of steel under compression and tension, and stirrup spacing
-for span in spans:
+for i, span in enumerate(spans):
     spanDiv = span[L]/8
-    span[momVals] = [calMom(spanDiv * i, span) for i in range(9)]
-    span[sfVals] = [calSf(spanDiv * i,span) for i in range(9)]
-    span[Ast] = [calAst(spanDiv * i, span) for i in range(9)]
-    span[Asc] = [calAsc(spanDiv * i, span) for i in range(9)]
-    span[Sv] = [calSv(spanDiv * i, span) for i in range(9)]
+    span[momVals] = [calMom(spanDiv * j, span) for j in range(9)]
+    span[sfVals] = [calSf(spanDiv * j,span) for j in range(9)]
+    span[Ast] = [calAst(spanDiv * j, span) for j in range(9)]
+    span[Asc] = [calAsc(spanDiv * j, span) for j in range(9)]
+    span[Sv] = [calSv(spanDiv * j, span) for j in range(9)]
+
+
+
+if DEBUG: print("\n\n----------------------------------DEBUG-INFO-END----------------------------------\n\n")
 
 ### Calculations +-/* END ###
 
@@ -401,11 +433,11 @@ for i,span in enumerate(spans):
     table = tabulate(tab_lst, headers=['Sr', 'Distance Ratio', 'Moment (kNm)', 'Shear Force (kN)', 'Ast(mm2)', 'Asc (mm2)', 'Sv (mm)'], tablefmt='orgtbl')
     
     pl_tab_lst = [ [j+1, pointL[mag], pointL[pos]] for j,pointL in enumerate(span[pLs])]
-    pl_table = tabulate(tab_lst, headers=['Sr', 'Magnitude', 'Position'], tablefmt='orgtbl')
+    pl_table = tabulate(pl_tab_lst, headers=['Sr', 'Magnitude', 'Position'], tablefmt='orgtbl')
 
     udl_tab_lst = [ [j+1, udl[mag], udl[strPos], udl[endPos]] for j,udl in enumerate(span[udls])]
                     
-    udl_table = tabulate(tab_lst, headers=['Sr', 'Magnitude', 'Start Position', 'End Position'], tablefmt='orgtbl')
+    udl_table = tabulate(udl_tab_lst, headers=['Sr', 'Magnitude', 'Start Position', 'End Position'], tablefmt='orgtbl')
 
     output_accum+='''
     SPAN #{}:
