@@ -318,8 +318,8 @@ if len(spans) > 1:
     for i, span in enumerate(spans):
         span[fems][l] = calFemLeft(span)
         span[fems][r] = calFemRight(span)
-        if DEBUG: print("Span #{}, FEM, Left = {}".format(i+1, span[fems][l]))
-        if DEBUG: print("Span #{}, FEM, Right = {}".format(i+1, span[fems][r]))
+        if DEBUG: print("Span #{}, FEM, Left    = {}".format(i+1, span[fems][l]))
+        if DEBUG: print("Span #{}, FEM, Right   = {}".format(i+1, span[fems][r]))
         #span[I]=calI(span)
     if DEBUG: print()
 
@@ -330,11 +330,11 @@ if len(spans) > 1:
 
     for i, span, prevSpan in zip(range(len(spans)), spans, prevSpans):
         span[df][l] = calDFLeft(span, prevSpan, i, len(spans))
-        if DEBUG: print("Span #{}, Distribution factor, Left = {}".format(i+1, span[df][l]))
+        if DEBUG: print("Span #{}, Distribution factor, Left    = {}".format(i+1, span[df][l]))
 
     for i, span, nxtSpan in zip(range(len(spans)), spans, nxtSpans):
         span[df][r] = calDFRight(span, nxtSpan, i, len(spans))
-        if DEBUG: print("Span #{}, Distribution factor, Right = {}".format(i+1, span[df][r]))
+        if DEBUG: print("Span #{}, Distribution factor, Right   = {}".format(i+1, span[df][r]))
 
     if DEBUG: print("\n----------------------------Handling CASE: END----------------------------\n")
 
@@ -346,8 +346,8 @@ reacMomLst = perfMomDist(spans, lMom, rMom)
 for i, span, (leftEndMom, rightEndMom) in zip(range(len(spans)), spans, reacMomLst):
     span[fbd][endMoms][l] = leftEndMom
     span[fbd][endMoms][r] = rightEndMom
-    if DEBUG: print("Span #{}, FBD, end moment, Left = {}".format(i+1, span[fbd][endMoms][l]))
-    if DEBUG: print("Span #{}, FBD, end moment, Right = {}".format(i+1, span[fbd][endMoms][r]))
+    if DEBUG: print("Span #{}, FBD, end moment, Left    = {}".format(i+1, span[fbd][endMoms][l]))
+    if DEBUG: print("Span #{}, FBD, end moment, Right   = {}".format(i+1, span[fbd][endMoms][r]))
 
 if DEBUG: print()
 
@@ -355,8 +355,8 @@ if DEBUG: print()
 for i, span in enumerate(spans):
     span[fbd][reacs][l] = calLeftReac(span)
     span[fbd][reacs][r] = calRightReac(span)
-    if DEBUG: print("Span #{}, Support Reaction, Left = {}".format(i+1, span[fbd][reacs][l]))
-    if DEBUG: print("Span #{}, Support Reaction, Right = {}".format(i+1, span[fbd][reacs][r]))
+    if DEBUG: print("Span #{}, Support Reaction, Left   = {}".format(i+1, span[fbd][reacs][l]))
+    if DEBUG: print("Span #{}, Support Reaction, Right  = {}".format(i+1, span[fbd][reacs][r]))
 
 #finds beam length, will be used in graph ploting
 beamLen = calBeamLen(spans)
@@ -368,9 +368,9 @@ for i,span in enumerate(spans):
     span[Xumax]=calXumax(span)
     span[Ru]=calRu(span)
     span[Mulim]=calMulim(span)
-    if DEBUG: print("Span #{}, Xumax = {}".format(i+1, span[Xumax]))
-    if DEBUG: print("Span #{}, Ru = {}".format(i+1, span[Ru]))
-    if DEBUG: print("Span #{}, Mulim = {}".format(i+1, span[Mulim]))
+    if DEBUG: print("Span #{}, Xumax    = {}".format(i+1, span[Xumax]))
+    if DEBUG: print("Span #{}, Ru       = {}".format(i+1, span[Ru]))
+    if DEBUG: print("Span #{}, Mulim    = {}".format(i+1, span[Mulim]))
 
 if DEBUG: print("\n(info) Not printing final values, please refer to output\n")
 
