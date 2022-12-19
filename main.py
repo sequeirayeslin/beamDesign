@@ -30,6 +30,8 @@ BEAM DESIGN PROGRAM
 
 queriesReq=True
 
+proj_name=input('\nEnter project name: ')
+
 if exists('input.json'):
     resp=qryCmmdVald("\nLoad json?\n->",['y',''])
     if resp=='y':
@@ -38,14 +40,14 @@ if exists('input.json'):
         with open('input.json','r') as data_file:
             spans=json.loads(data_file.read())
 
-        lMom=0
+        lMom=0#implement query, this is not correct
         rMom=0
-        proj_name='random'
+        #proj_name='random'
 
 if queriesReq:
     ### Queries ??? ###
 
-    proj_name=input('\nEnter project name: ')
+    #proj_name=input('\nEnter project name: ')
 
     span_count = qryTypeVald('''
     How many spans?
@@ -441,12 +443,12 @@ for i,span in enumerate(spans):
 
     output_accum+='''
     SPAN #{}:
+
     b (mm): {}
     D (mm): {}
     Stirrup Diameter (mm): {}
     Steel Grade (N/mm2): {}
     Concrete Grade: M{}
-    
 
     Point Loads:
 

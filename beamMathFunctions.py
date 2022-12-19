@@ -394,12 +394,13 @@ def calAsc(x,span):
 
 def calTv(x,span):
     ''' Calculates nominal shear stress in N/mm2 '''
-    Vu = 1.5 * calSf(x,span) *1000
+    Vu = 1.5 * abs(calSf(x,span)) *1000
     return Vu/(span[b_mm]*span[d_mm])
 
 def calTc(x,span):
     ''' Calculates design shear strength of concrete in N/mm2 '''
     st_per = 100 * calAst(x,span) / (span[b_mm] * span[d_mm])
+    st_per = abs(st_per)
     if st_per <= 0.15:
         st_per = 0.15
     else:
@@ -412,15 +413,15 @@ def calTc(x,span):
 
 def calSv(x,span):
     ''' Calculates stirrup spacing in mm '''
-    Tv_tmp = calTv(x,span) # possible issue
-    Tc_tmp = calTc(x,span) # possible issue
+    Tv_tmp = calTv(x,span)
+    Tc_tmp = calTc(x,span)
 
-    if Tv_tmp > Tc_max_dict[span[fck]]:
+    if abs(Tv_tmp) > Tc_max_dict[span[fck]]:
         raise ValueError("Error: Tv > Tc_max!")
-    if Tv_tmp<Tc_tmp:
-        tmp = 0.87 * 415 * span[Asv] / (0.4 * span[b_mm]) # possible issue: span[Asv]
+    if abs(Tv_tmp) < Tc_tmp:
+        tmp = 0.87 * 415 * span[Asv] / (0.4 * span[b_mm])
     else:
-        Vu = 1.5 * calSf(x,span) * 1000 # possible issue: calSf(x,span)
+        Vu = abs(1.5 * calSf(x,span) * 1000)
         Vus = Vu - Tc_tmp * span[b_mm] * span[d_mm]
         tmp = 0.87 * 415 * span[Asv] * span[d_mm] / Vus
     
