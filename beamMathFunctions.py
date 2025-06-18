@@ -176,7 +176,7 @@ def perfMomDist(spans, canLMom, canRMom):
 
     #initial factors to sum#
 
-    can_fact=np.array([[-canLMom, -canLMom/2]] + [[0,0]] * (len(spans)-2) + [[-canRMom/2, -canRMom]])
+    can_fact=np.array([[canLMom, canLMom/2]] + [[0,0]] * (len(spans)-2) + [[canRMom/2, canRMom]])
 
     fem_fact = np.array(fem_lst)
 
