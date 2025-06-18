@@ -18,7 +18,7 @@ from beamDictKeys import *
 from math import pi
 from os.path import exists
 
-DEBUG=True
+DEBUG=False
 
 print('''
 BEAM DESIGN PROGRAM
