@@ -4,16 +4,24 @@ def qryCmmdVald(qry,vRespLst):
   '''query with command vaildation (a function that prints an error when a invalid command string is entered and requests for a response again. The valid strings must be put into a list and sent through the 2nd parameter)'''
   while True:
     resp=input(qry)
+    resp = resp.lower() # QoL improvement, you can enter capitals now
     for vResp in vRespLst: # vResp -> Valid Response
       if resp==vResp:
         return resp
     print("\nERROR: Invalid command")
 
-def qryTypeVald(qry,vType,lLim=-99999999999999999999,uLim=99999999999999999999):
+def qryTypeVald(qry,vType,lLim=-99999999999999999999,uLim=99999999999999999999, enterIsZero = False):
   '''query with input datatype validation, also has provision for specifing valid range for float and int'''
   while True:
     try:
-      resp=vType(input(qry))
+
+      resp = input(qry)
+      #provision to interpret no input as zero
+      if (resp == "") & enterIsZero:
+        resp = "0"
+      
+      resp=vType(resp)
+
       if vType==float or vType==int: #vType-> valid data type function object
         if resp>=lLim and resp<=uLim: #makes sure number is within specified limits
           return resp

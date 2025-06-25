@@ -296,8 +296,8 @@ if queriesReq:
             elif resp == '':
                 break
 
-    lMom=qryTypeVald('\nEnter left moment: ',float)
-    rMom=qryTypeVald('\nEnter right moment: ',float)
+    lMom=qryTypeVald('\nEnter left moment (hit Enter for zero): ',float, enterIsZero=True)
+    rMom=qryTypeVald('\nEnter right moment (hit Enter for zero): ',float, enterIsZero=True)
 
     ### Queries ??? END ###
 
